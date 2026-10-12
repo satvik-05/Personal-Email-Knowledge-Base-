@@ -1,0 +1,30 @@
+[
+  {
+    "message_id": "<bug-001@example.com>",
+    "subject": "URGENT: duplicate charges in production",
+    "from": "dave@example.com",
+    "to": ["alice@example.com", "bob@example.com"],
+    "date": "2025-02-05T22:10:00Z",
+    "body": "Alice, Bob,\n\nWe're seeing duplicate charges in production. Three customers reported being charged twice for their February subscription. I've confirmed it in the Stripe dashboard — each has two identical charge events within 30 seconds of each other.\n\nThis started after yesterday's deploy (commit abc123). I think it's related to the subscription module changes.\n\nI've paused the billing cron job for now. Need someone to look at this ASAP.\n\n- Dave"
+  },
+  {
+    "message_id": "<bug-002@example.com>",
+    "subject": "Re: URGENT: duplicate charges in production",
+    "from": "bob@example.com",
+    "to": ["dave@example.com", "alice@example.com"],
+    "date": "2025-02-05T22:45:00Z",
+    "in_reply_to": "<bug-001@example.com>",
+    "references": ["<bug-001@example.com>"],
+    "body": "Dave,\n\nFound it. The new subscription handler sends the charge request, but the retry logic I wrote doesn't check for Stripe's idempotency key properly. If the first request times out (which it did — Stripe had a brief latency spike), the retry sends a second charge without the same idempotency key.\n\nFix is straightforward: generate the idempotency key BEFORE the first attempt and reuse it on retries.\n\nPushing the fix now. We'll need to issue refunds for the three affected customers.\n\n- Bob"
+  },
+  {
+    "message_id": "<bug-003@example.com>",
+    "subject": "Re: URGENT: duplicate charges in production",
+    "from": "alice@example.com",
+    "to": ["bob@example.com", "dave@example.com", "carol@example.com"],
+    "date": "2025-02-06T08:00:00Z",
+    "in_reply_to": "<bug-002@example.com>",
+    "references": ["<bug-001@example.com>", "<bug-002@example.com>"],
+    "body": "Bob — thanks for the fast turnaround.\n\nAction items from this incident:\n1. Bob: add idempotency key tests to the subscription module (by Feb 7)\n2. Dave: process refunds for the three affected customers today\n3. Carol: add idempotency validation to the new webhook handlers too — same class of bug\n4. Alice (me): write up an incident report for the team\n\nLesson learned: any Stripe integration that retries MUST use idempotency keys. Adding this to our code review checklist.\n\n- Alice"
+  }
+]

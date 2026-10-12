@@ -1,0 +1,58 @@
+[
+  {
+    "message_id": "<alpha-001@example.com>",
+    "subject": "Project Alpha kickoff",
+    "from": "alice@example.com",
+    "to": ["bob@example.com", "carol@example.com"],
+    "date": "2025-01-10T09:00:00Z",
+    "body": "Hi team,\n\nI'd like to kick off Project Alpha. The goal is to migrate our payment processing from Stripe v2 to v3 by end of Q1.\n\nKey milestones:\n1. Audit current integration points (Jan 15)\n2. Implement new webhook handlers (Feb 1)\n3. Parallel-run both versions (Feb 15)\n4. Cut over (Mar 1)\n\nBob — can you own the audit? Carol — webhook handlers.\n\nLet's sync weekly on Tuesdays.\n\n- Alice"
+  },
+  {
+    "message_id": "<alpha-002@example.com>",
+    "subject": "Re: Project Alpha kickoff",
+    "from": "bob@example.com",
+    "to": ["alice@example.com", "carol@example.com"],
+    "date": "2025-01-10T14:30:00Z",
+    "in_reply_to": "<alpha-001@example.com>",
+    "references": ["<alpha-001@example.com>"],
+    "body": "Alice,\n\nI'll take the audit. Initial look shows 14 integration points across 3 services. Two are deprecated endpoints that Stripe already flagged.\n\nOne concern: the subscription billing module uses a custom wrapper around Stripe's old charge API. That'll need a rewrite, not just a version bump.\n\n- Bob"
+  },
+  {
+    "message_id": "<alpha-003@example.com>",
+    "subject": "Re: Project Alpha kickoff",
+    "from": "carol@example.com",
+    "to": ["alice@example.com", "bob@example.com"],
+    "date": "2025-01-11T10:15:00Z",
+    "in_reply_to": "<alpha-002@example.com>",
+    "references": ["<alpha-001@example.com>", "<alpha-002@example.com>"],
+    "body": "Bob, good catch on the subscription module.\n\nI've started looking at the new webhook format. The event structure changed significantly — we'll need to update our event parser and the idempotency checks.\n\nQuestion for Alice: should we support both v2 and v3 webhook formats during the parallel-run phase, or switch the webhook endpoint atomically?\n\n- Carol"
+  },
+  {
+    "message_id": "<alpha-004@example.com>",
+    "subject": "Re: Project Alpha kickoff",
+    "from": "alice@example.com",
+    "to": ["carol@example.com", "bob@example.com"],
+    "date": "2025-01-12T08:45:00Z",
+    "in_reply_to": "<alpha-003@example.com>",
+    "references": ["<alpha-001@example.com>", "<alpha-002@example.com>", "<alpha-003@example.com>"],
+    "body": "Carol — support both formats during parallel-run. We can't risk missing payment events during cutover.\n\nBob — given the subscription module complexity, let's push the audit deadline to Jan 20 and add a separate milestone for the subscription rewrite.\n\nRevised milestones:\n1. Audit current integration points (Jan 20) — extended\n2. Subscription module rewrite (Feb 10) — NEW\n3. Implement new webhook handlers (Feb 15) — shifted\n4. Parallel-run both versions (Mar 1) — shifted\n5. Cut over (Mar 15) — shifted\n\nI'll update the project tracker.\n\n- Alice"
+  },
+  {
+    "message_id": "<alpha-005@example.com>",
+    "subject": "Project Alpha — audit complete",
+    "from": "bob@example.com",
+    "to": ["alice@example.com", "carol@example.com"],
+    "date": "2025-01-19T16:00:00Z",
+    "body": "Team,\n\nAudit is done. Summary:\n- 14 integration points total\n- 8 are straightforward version bumps\n- 4 need minor refactoring (parameter name changes, new required fields)\n- 2 need significant rewrite (subscription billing, refund processor)\n\nThe refund processor is a second problem area I didn't see initially. It uses Stripe's Transfer Reversals API which is being removed entirely in v3. We'll need to use the new Refunds API instead.\n\nAttaching the full audit spreadsheet.\n\n- Bob"
+  },
+  {
+    "message_id": "<alpha-006@example.com>",
+    "subject": "Re: Project Alpha — audit complete",
+    "from": "alice@example.com",
+    "to": ["bob@example.com", "carol@example.com", "dave@example.com"],
+    "date": "2025-01-20T09:30:00Z",
+    "in_reply_to": "<alpha-005@example.com>",
+    "references": ["<alpha-005@example.com>"],
+    "body": "Thanks Bob. The refund processor is a concern — that's a money path and we need it right.\n\nDecision: I'm bringing Dave in to own the refund processor rewrite. Bob, you focus on the subscription module.\n\nDave — context is in this thread. Bob found that Stripe v3 removes Transfer Reversals entirely. We need to migrate to the Refunds API. This is payment-critical so it needs thorough testing.\n\nUpdated ownership:\n- Bob: subscription billing rewrite\n- Carol: webhook handlers + event parser\n- Dave: refund processor rewrite\n\n- Alice"
+  }
+]

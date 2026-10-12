@@ -1,0 +1,34 @@
+[
+  {
+    "question": "What are the milestones for Project Alpha?",
+    "relevant_email_ids": ["<alpha-001@example.com>", "<alpha-004@example.com>"]
+  },
+  {
+    "question": "Who owns the refund processor rewrite?",
+    "relevant_email_ids": ["<alpha-006@example.com>"]
+  },
+  {
+    "question": "What caused the duplicate charges bug?",
+    "relevant_email_ids": ["<bug-001@example.com>", "<bug-002@example.com>"]
+  },
+  {
+    "question": "What is the fix for the idempotency key issue?",
+    "relevant_email_ids": ["<bug-002@example.com>"]
+  },
+  {
+    "question": "What are the action items from the duplicate charges incident?",
+    "relevant_email_ids": ["<bug-003@example.com>"]
+  },
+  {
+    "question": "How many integration points did the Stripe audit find?",
+    "relevant_email_ids": ["<alpha-005@example.com>", "<alpha-002@example.com>"]
+  },
+  {
+    "question": "Who is working on webhook handlers?",
+    "relevant_email_ids": ["<alpha-003@example.com>", "<alpha-006@example.com>"]
+  },
+  {
+    "question": "What decision was made about supporting both webhook formats?",
+    "relevant_email_ids": ["<alpha-004@example.com>", "<alpha-003@example.com>"]
+  }
+]
